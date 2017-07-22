@@ -116,11 +116,11 @@
 
 	 
 <!--  Start of Body  -->
- <body>
+<body>
     <header>
-	    <div>
-	        <h1>Out of Network Utilization - Texas</h1>
-	    </div>
+        <div>
+	    <h1>Out of Network Utilization - Texas</h1>
+	</div>
     </header>
         <div class="wrapper">
  	    <div class="select_box">
@@ -143,20 +143,20 @@
 
 <!--  Scripts  --> 
      <script>
-        // initialize map
+        // Initialize map
 	var map = L.map('map').setView([31.128752, -100.39], 6);  // initialize Leaflet map
 	map.attributionControl.setPrefix('');  //  removes the LeafletJS logo.
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);  // adds Open Street Map layer to Leaflet map
         var initial_feature = 'zipMean';  // initialize map with this feature
         var selected_feature; // updated based on user selection, and initialized by select_feature() function using initial feature
 
-        // variable to hold scale break points when selecting a new drop down item. 	
+        // Variable to hold scale break points when selecting a new drop down item.	
         var feature_break_points = [];
 
-	// intialize map with a feature and assign to selected feature
+	// Intialize map with a feature and assign to selected feature
         select_feature();
 
-	// add zip code data layer to map
+	// Add zip code data layer to map
 	var geojson = L.geoJson(zip_codes_data, {
 	    style: style,
 	    onEachFeature: onEachFeature
@@ -166,9 +166,10 @@
         var feature_readable_names = {'zipMean':'OON/Total Visits', 'provider_density':'Provider Density', 'population_density_sqmile':'Population Density / Sq Mile', 'mean_income':'Average Income'};
 
 
-// Leaflet-specific functions
+    // Leaflet-specific functions
 
-    function style(feature) {  // style function for individual map boundary areas
+	// Style function for individual map boundary areas
+        function style(feature) {
 	    return {
 	    	fillColor: getColor(feature['properties'][selected_feature]),
 	        weight: 1,
@@ -179,15 +180,14 @@
 	    };
 	}
 
-
-	function getColor(feature) {  // function to appropriately color choropleth area
-		var getMapColor = chroma.scale('OrRd').domain([0, feature_break_points[feature_break_points.length - 1]]).classes(feature_break_points).correctLightness(true);
-
-        return getMapColor(feature)
+        // Function to appropriately color choropleth area
+	function getColor(feature) {
+	    var getMapColor = chroma.scale('OrRd').domain([0, feature_break_points[feature_break_points.length - 1]]).classes(feature_break_points).correctLightness(true);
+            return getMapColor(feature)
 	}
 
-
-	function onEachFeature(feature, layer) {  // use onEachFeature option to add event listeners to data layer
+	// Use onEachFeature option to add event listeners to data layer
+	function onEachFeature(feature, layer) {
 	    layer.on({
 	        mouseover: highlightFeature,
 	        mouseout: resetHighlight,
@@ -195,8 +195,8 @@
 	    });
 	}
 
-
-	function highlightFeature(e) {  // highlight area on mouseover event
+	// Highlight area on mouseover event
+	function highlightFeature(e) {
 	    var layer = e.target;
 
 	    layer.setStyle({
@@ -213,114 +213,124 @@
 	    info.update(layer.feature.properties);
 	}
 
-
-	function resetHighlight(e) {  // reset style on mouseout event
+	// Reset style on mouseout event
+	function resetHighlight(e) {
 	    geojson.resetStyle(e.target);
 	    info.update();
 	}
 
-
-	function zoomToFeature(e) {  // zoom to feature on click event
+	// Zoom to feature on click event
+	function zoomToFeature(e) {
 	    map.fitBounds(e.target.getBounds());
 	}
 
 
-  // feature information box
+    // Feature information box (e.g. displays value of selected variable, zip code information, etc.).
+	
+	// Create info variable for Leaflet information box control.
 	var info = L.control();
 
+	// Create div container for information box on map.
 	info.onAdd = function(map) {
 		this._div = L.DomUtil.create('div', 'info'); // create a div with class "info"
-		this.update();
+		this.update();  // calls update method (see info.update)
 		return this._div;
 	};
 
-	info.update = function (props) {  // update the info box based on feature properties passed
+	// Update the information box based on feature properties passed
+	info.update = function(props) {
 	    this._div.innerHTML = '<h4>Feature Information</h4>' +  (props ?
 	    	'<b>' + props['ZCTA5CE10'] + '</b>' + '<br>' + 
 	        feature_readable_names[selected_feature] + ': ' + Number(props[selected_feature]).toFixed(2)
 	        : 'Hover over an area');
 	};
 
+	// Add information box to map
 	info.addTo(map);
 
 
-  // map legend
+    // Map legend
+	
+	// Set position of legend on map.
 	var legend = L.control({position: 'bottomright'});
 
+	// Constructs map legend based on feature break points
 	legend.onAdd = function(map) {
+		// Set div container for legend (i.e. map scale).
 		var div = L.DomUtil.create('div', 'info legend');
 
-		for (var i = feature_break_points.length - 1; i-- > 0; ) {  // loop through intervals in reverse and generate a label for each
-			div.innerHTML +=
-				'<div style="overflow: hidden">' + '<i style="background:' + getColor(feature_break_points[i]) + '"></i> ' + feature_break_points[i].toFixed(2) + '&ndash;' + feature_break_points[i + 1].toFixed(2) + '<br>'
+		// loop through intervals in reverse and generate a label for each, appending each to legend div. 
+		for (var i = feature_break_points.length - 1; i-- > 0; ) {
+		    div.innerHTML +=
+		        '<div style="overflow: hidden">' + '<i style="background:' + getColor(feature_break_points[i]) + '"></i> ' + feature_break_points[i].toFixed(2) + '&ndash;' + feature_break_points[i + 1].toFixed(2) + '<br>'
 		}
 
+		// Return constructed legend/scale.
 		return div;
 	};
 
+	// Add legend to map
 	legend.addTo(map);
 
 
-// custom event listeners: drop down menu and toggle button
+    // Custom event listeners: drop down menu and toggle button
 
-		function select_feature(drop_down_selected) {  // updates map when drop down menu feature is selected
+	// updates map when drop down menu feature is selected
+        function select_feature(drop_down_selected) {
             if (!selected_feature) {  // if feature has not been selected yet, initialize with initial_feature
                 selected_feature = initial_feature;
-                update_map_feature(); // provides getColor() with appropriate scale
-            } else {
-				selected_feature = drop_down_selected;
-			    map.removeLayer(geojson);  // remove map data layer
-				map.removeControl(legend);  // remove legend w/ previous selected feature attributes
-			    update_map_feature();  // provides getColor() with appropriate scale
-			    legend.addTo(map);  // add legend w/ selected feature attributes
-			    geojson = L.geoJson(zip_codes_data, {
-				    style: style,
-				    onEachFeature: onEachFeature
-				}).addTo(map);
-            }
-		}
+                update_map_feature();} // provides getColor() with appropriate scale 
+	    else {
+	        selected_feature = drop_down_selected;
+	        map.removeLayer(geojson);  // remove map data layer
+		map.removeControl(legend);  // remove legend w/ previous selected feature attributes
+	        update_map_feature();  // provides getColor() with appropriate scale
+	        legend.addTo(map);  // add legend w/ selected feature attributes
+	        geojson = L.geoJson(zip_codes_data, {
+		    style: style,
+		    onEachFeature: onEachFeature}).addTo(map);}
+	}
+
+        // toggle data layer variable and function (for toggle button)
+	var toggle = false;
+	function toggleLayer() {
+	    // add or remove map layer based on toggle state.
+	    if(!toggle) {
+                map.removeLayer(geojson);} 
+	    else {
+                map.addLayer(geojson);}	
+	    // change toggle to opposite state. 
+	    toggle = !toggle;
+	}
 
 
-	    var toggle = false;  // toggle data layer variable and function (for toggle button)
-	    function toggleLayer() {
-			if(!toggle) {
-			    map.removeLayer(geojson);
-			} 
-			else {
-			    map.addLayer(geojson);
-			}
-			toggle = !toggle;
-		}
+    // Functions to update feature_break_points using ht-breaks algorithm
 
+	// Updates feature_break_points - called by select_feature() before populating the map with the geojson layer, which calls style() which calls getColor() which uses feature_break_points to appropriately color individual map areas
+        function update_map_feature() {
+            // 1: create temp array to store values of a selected variable pertaining to each map area (e.g. Zip Code).
+	    var tempFeatureArray = [];  // temp array to hold feature values for ht-breaks computation
 
-// functions to update feature_break_points using ht-breaks algorithm
-
-    function update_map_feature() {
-        // function to update feature_break_points, this function is called by select_feature() before populating the map with the geojson layer, which calls style() which calls getColor() which uses feature_break_points to appropriately color individual map areas
-        
-      // 1: create temp array of feature values pertaining to each map area 
-        var tempFeatureArray = [];  // temp array to hold feature values for ht-breaks computation
-
-        zip_codes_data['features'].forEach(function(feature){  // for each loop to push values to temp array, ignoring non-numeric values (e.g. NaN, undefined, etc.)
-
+	    // for each loop to push values to temp array, ignoring non-numeric values (e.g. NaN, undefined, etc.)
+	    zip_codes_data['features'].forEach(function(feature){
 	        if (isFinite(feature['properties'][selected_feature])) {
-                tempFeatureArray.push(Number(feature['properties'][selected_feature]));
-            }
-        });
+		    tempFeatureArray.push(Number(feature['properties'][selected_feature]));}
+	    });
 
-      // 2: update feature_break_points variable
-        feature_break_points = htb(tempFeatureArray);
-        var feature_max_value = Math.max.apply(Math, tempFeatureArray);
+            // 2: update feature_break_points variable
+	    feature_break_points = htb(tempFeatureArray);
+	    var feature_max_value = Math.max.apply(Math, tempFeatureArray);
+	    feature_break_points.unshift(0);  // prepend zero to array
+	    feature_break_points.push(feature_max_value); // append max value
+        }
 
-        feature_break_points.unshift(0);  // prepend zero to array
-        feature_break_points.push(feature_max_value); // append max value
-    }
+	// ht-breaks algorithm -- returns feature break points
+	function htb(data) {
+		// array to hold htb_inner results
+		var feature_break_points = [];
 
-
-	function htb(data) {  // ht-breaks algorithm -- returns feature break points
-		var feature_break_points = [];  // array to hold htb_inner results
-
-		function htb_inner(data) {  // recursive function to compute ht-breaks and append to feature_break_points array
+		// recursive function to compute ht-breaks and append to feature_break_points array
+		function htb_inner(data) {
 		    var data_mean = data.reduce(function(a, b){return a + b})/data.length;
 		    var head = data.filter(function(d){return d > data_mean});
 		    feature_break_points.push(data_mean);
@@ -328,12 +338,12 @@
 		        return htb_inner(head);
 		    };
 		}
-        
-        htb_inner(data)
+           
+		// Run inner head-tail breaks function to get break points for constructing the scale of a given feature.
+                htb_inner(data)
 		return feature_break_points;
-	}
+        }
 
-
- 	</script>
- </body>
- </html> 
+    </script>
+</body>
+</html> 
