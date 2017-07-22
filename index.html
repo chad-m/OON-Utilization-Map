@@ -1,26 +1,20 @@
 <!DOCTYPE html>
  <html lang="en">
  <head>
- 	<meta charset="UTF-8">
- 	<title>OON Utilization Texas</title>
- 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+     <meta charset="UTF-8">
+     <title>OON Utilization Texas</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.1.1/chroma.min.js"></script>
     <script src="./assets/data/zip_codes_data.txt"></script>
-	<style>
-        body {
-        	background: #f2f2f2;
-        }
+    <style>
+        body {background: #f2f2f2;}
 
-        .hideAndSeek {
-        	visibility: hidden;
-        }
+        .hideAndSeek {visibility: hidden;}
 
-        #main {
-        	width: 90%;
-        }
+        #main {width: 90%;}
 
         #map {
         	width: 80%;
@@ -28,163 +22,148 @@
         	margin: 0 auto;
         	-webkit-box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.75);
 			-moz-box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.75);
-			box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.75);
-        }
+			box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.75);}
 
-		.legend {
-			line-height: 18px;
-			color: #555;
-		}
+	.legend {
+		line-height: 18px;
+		color: #555;}
 
-		.legend i {
-			width: 18px;
-			height: 18px;
-			float: left;
-			margin-right: 8px;
-			opacity: 0.7;
-		}
+	.legend i {
+		width: 18px;
+		height: 18px;
+		float: left;
+		margin-right: 8px;
+		opacity: 0.7;}
 
-		.info {
-		    padding: 6px 8px;
-		    font: 10px/12px Arial, Helvetica, sans-serif;
-		    background: white;
-		    background: rgba(255,255,255,0.8);
-		    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-		    border-radius: 5px;
-		}
-		.info h4 {
-		    margin: 0 0 5px;
-		    color: #777;
-		}
+	.info {
+	    padding: 6px 8px;
+	    font: 10px/12px Arial, Helvetica, sans-serif;
+	    background: white;
+	    background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	    border-radius: 5px;}
 
-		button {
-			background: #3498db;
-			background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
-			background-image: -moz-linear-gradient(top, #3498db, #2980b9);
-			background-image: -ms-linear-gradient(top, #3498db, #2980b9);
-			background-image: -o-linear-gradient(top, #3498db, #2980b9);
-			background-image: linear-gradient(to bottom, #3498db, #2980b9);
-			-webkit-border-radius: 7;
-			-moz-border-radius: 7;
-			border-radius: 7px;
-			text-shadow: 1px 1px 3px #666666;
-			-webkit-box-shadow: 0px 1px 3px #666666;
-			-moz-box-shadow: 0px 1px 3px #666666;
-			box-shadow: 0px 1px 3px #666666;
-			font-family: Georgia;
-			color: #ffffff;
-			font-size: 20px;
-			padding: 10px 20px 10px 20px;
-			text-decoration: none;
-			float: right;
-		}
+	.info h4 {
+	    margin: 0 0 5px;
+	    color: #777;}
 
-		button:hover {
-			background: #3cb0fd;
-			background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-			background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-			background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-			background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-			background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-			text-decoration: none;
-		}
+	button {
+	    background: #3498db;
+	    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+	    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+	    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+	    background-image: -o-linear-gradient(top, #3498db, #2980b9);
+	    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+	    -webkit-border-radius: 7;
+	    -moz-border-radius: 7;
+	    border-radius: 7px;
+	    text-shadow: 1px 1px 3px #666666;
+	    -webkit-box-shadow: 0px 1px 3px #666666;
+	    -moz-box-shadow: 0px 1px 3px #666666;
+	    box-shadow: 0px 1px 3px #666666;
+	    font-family: Georgia;
+	    color: #ffffff;
+	    font-size: 20px;
+	    padding: 10px 20px 10px 20px;
+	    text-decoration: none;
+	    float: right;}
 
-		button:focus {
-			outline:0;
-		}
+	button:hover {
+	    background: #3cb0fd;
+	    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+	    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+	    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+	    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+	    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+	    text-decoration: none;}
 
+	button:focus {
+            outline:0;}
 
-		header > div {
-		    color: #3B3738;
-			text-align: center;
-			width: 100%;
-			margin: 0 auto;
-		}
+	header > div {
+	    color: #3B3738;
+	    text-align: center;
+	    width: 100%;
+	    margin: 0 auto;}
 
-		header > div > h1 {
-			color: #3B3738;;
-		}
-		
-		
-		.select_box {
-		    width: 300px;
-		    margin: 0 auto;
-		}
-		
+	header > div > h1 {
+	    color: #3B3738;}
 
-		.select_box > div {
-		    text-align: center;
-			font-family: Georgia;
-			color: #3B3738;
-			font-weight: bold;
-		}
-		
+	.select_box {
+	    width: 300px;
+	    margin: 0 auto;}
 
-		select {
-		    width: 100%;
-			background: #3B3738;
-			color: white;
-			border-radius: 3px;
-			padding: 5px;
-			font-family: georgia;
-		}
+	.select_box > div {
+	    text-align: center;
+	    font-family: Georgia;
+	    color: #3B3738;
+	    font-weight: bold;}	
 
-	</style>
- </head>
+	    
+	    
+	    
+	  
+	select {
+	    width: 100%;
+	    background: #3B3738;
+	    color: white;
+	    border-radius: 3px;
+	    padding: 5px;
+	    font-family: georgia;}
 
+    </style>
+</head>
+
+	 
+<!--  Start of Body  -->
  <body>
-
     <header>
 	    <div>
-		    <h1>Out of Network Utilization - Texas</h1>
-		</div>
-	</header>
-	
-	<div class="wrapper">
- 	 <div class="select_box">
-	  <div>CHOOSE A FEATURE:</div>
-	  <select onchange='select_feature(this.value)'>
-		<option value='zipMean'>Average OON/Total Visits</option>
-	    <option value='provider_density'>Provider Density per 1000 People</option>
-		<option value='population_density_sqmile'>Population Density</option>
-		<option value='mean_income'>Average Income</option>
-	  </select>
-     </div>
+	        <h1>Out of Network Utilization - Texas</h1>
+	    </div>
+    </header>
+        <div class="wrapper">
+ 	    <div class="select_box">
+	        <div>CHOOSE A FEATURE:</div>
+	        <select onchange='select_feature(this.value)'>
+		    <option value='zipMean'>Average OON/Total Visits</option>
+	            <option value='provider_density'>Provider Density per 1000 People</option>
+		    <option value='population_density_sqmile'>Population Density</option>
+		    <option value='mean_income'>Average Income</option>
+	        </select>
+            </div>
 	</div> 
-
     <br>
-
- 	<div id="map"></div>
+    
+    <div id="map"></div>
 
     <br>
     <button onclick="toggleLayer();">Toggle Data Layer</button>
 
 
-<!-- scripts --> 
- 	<script>
-
-// initialize map
-
+<!--  Scripts  --> 
+     <script>
+        // initialize map
 	var map = L.map('map').setView([31.128752, -100.39], 6);  // initialize Leaflet map
-
 	map.attributionControl.setPrefix('');  //  removes the LeafletJS logo.
-
 	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);  // adds Open Street Map layer to Leaflet map
+        var initial_feature = 'zipMean';  // initialize map with this feature
+        var selected_feature; // updated based on user selection, and initialized by select_feature() function using initial feature
 
-    var initial_feature = 'zipMean';  // initialize map with this feature
+        // variable to hold scale break points when selecting a new drop down item. 	
+        var feature_break_points = [];
 
-    var selected_feature; // updated based on user selection, and initialized by select_feature() function using initial feature
+	// intialize map with a feature and assign to selected feature
+        select_feature();
 
-    var feature_break_points = [];
-
-    select_feature();  // intialize map with initial feature and assign to selected feature
-
-	var geojson = L.geoJson(zip_codes_data, {  // add zip code data layer to map
+	// add zip code data layer to map
+	var geojson = L.geoJson(zip_codes_data, {
 	    style: style,
 	    onEachFeature: onEachFeature
 	}).addTo(map);
 
-    var feature_readable_names = {'zipMean':'OON/Total Visits', 'provider_density':'Provider Density', 'population_density_sqmile':'Population Density / Sq Mile', 'mean_income':'Average Income'};  // this will need to be automated for product version
+	// Specify how variables names are displayed in UI (e.g. zipMean -> 'OON/Total Visits').   
+        var feature_readable_names = {'zipMean':'OON/Total Visits', 'provider_density':'Provider Density', 'population_density_sqmile':'Population Density / Sq Mile', 'mean_income':'Average Income'};
 
 
 // Leaflet-specific functions
